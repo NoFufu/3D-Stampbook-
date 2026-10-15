@@ -69,8 +69,8 @@ Eine Seite = 4 × 3 Slots (wie im echten Heft). Jede Marke kennt ihren Slot.
 ## 6. Meilensteine
 
 1. **Preview** (fertig): klickbares CSS-3D-Heft, generierte Marken, Foto-Upload lokal
-2. **Grundgerüst**: Next.js + Tailwind + shadcn, Komponenten aus den drei Libraries installieren
-3. **3D-Heft**: React Three Fiber, Umblättern mit Drag, Lesebändchen, Schatten
+2. **Grundgerüst** (fertig): Next.js + Tailwind + shadcn, Komponenten aus den drei Libraries installiert
+3. **3D-Heft** (fertig, erste Version): React Three Fiber, Umblättern mit Drag, Lesebändchen, Schatten, Foto-Upload lokal
 4. **Upload & Ausschneiden**: Foto → entzerrte Seite → 12 Marken
 5. **Backend**: Supabase, Login, Speichern
 6. **Sammlung & Statistik**: Galerie, Bklit-Charts
