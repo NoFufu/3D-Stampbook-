@@ -52,11 +52,13 @@ const VARIANTS = {
   ),
   seide: () => (
     <Silk
-      color="#2a2433"
-      sheenColor="#b9a3dc"
-      speed={2.5}
-      sheen={0.35}
-      glow={0.2}
+      dpr={1}
+      noiseIntensity={0.3}
+      color="#211e27"
+      sheenColor="#9c8baf"
+      speed={0.65}
+      sheen={0.14}
+      glow={0.08}
       clickRipple={false}
       intro={false}
     />
@@ -67,7 +69,16 @@ const VARIANTS = {
 type Variant = keyof typeof VARIANTS;
 
 export function Background() {
-  const [variant, setVariant] = useState<Variant>("lines");
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [variant, setVariant] = useState<Variant>("seide");
+
+  useEffect(() => {
+    const preference = matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(preference.matches);
+    update();
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     const bg = new URLSearchParams(window.location.search).get("bg");
@@ -76,8 +87,10 @@ export function Background() {
 
   const Render = VARIANTS[variant];
   return (
-    <div className="pointer-events-none fixed inset-0" aria-hidden>
-      <Render />
+    <div className="studio-background pointer-events-none fixed inset-0" aria-hidden>
+      {!reducedMotion && <Render />}
+      <div className="studio-vignette" />
+      <div className="studio-grain" />
     </div>
   );
 }

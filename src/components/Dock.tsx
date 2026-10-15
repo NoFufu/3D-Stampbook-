@@ -17,6 +17,7 @@ export type DockMenuItem = {
 };
 
 export type DockItemData = {
+  disabled?: boolean;
   icon?: React.ReactNode;
   label?: string;
   onClick?: () => void;
@@ -138,7 +139,7 @@ const ROOT_SIDES = {
 };
 
 const ITEM =
-  'group relative m-0 flex-none cursor-pointer select-none border-0 bg-transparent p-0 outline-none [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [font:inherit] w-[var(--dock-base)] h-[var(--dock-base)] text-[color:var(--dock-ink)] hover:z-[1] focus-visible:z-[1]';
+  'group relative m-0 flex-none cursor-pointer disabled:cursor-default disabled:opacity-25 select-none border-0 bg-transparent p-0 outline-none [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [font:inherit] w-[var(--dock-base)] h-[var(--dock-base)] text-[color:var(--dock-ink)] hover:z-[1] focus-visible:z-[1]';
 
 const TILE = 'pointer-events-none absolute left-0 top-0 w-[var(--dock-base)] h-[var(--dock-base)] origin-top-left';
 
@@ -1109,7 +1110,7 @@ export default function Dock({
       if (openMenu(index, 'keyboard')) event.preventDefault();
       return;
     }
-    const order = items.flatMap((item, i) => (item?.separator ? [] : [i]));
+    const order = items.flatMap((item, i) => (item?.separator || item.disabled ? [] : [i]));
     const at = order.indexOf(index);
     const keys = vertical ? ['ArrowUp', 'ArrowDown'] : ['ArrowLeft', 'ArrowRight'];
     let next: number | undefined;
@@ -1160,6 +1161,7 @@ export default function Dock({
             type="button"
             className={`${ITEM}${item.className ? ` ${item.className}` : ''}`}
             aria-label={item.label}
+            disabled={item.disabled}
             aria-haspopup={item.menu?.length ? 'menu' : undefined}
             aria-expanded={item.menu?.length ? openIndex === index : undefined}
             data-open={openIndex === index ? '' : undefined}

@@ -145,9 +145,9 @@ function FitCamera() {
     const cam = camera as THREE.PerspectiveCamera;
     const half = THREE.MathUtils.degToRad(cam.fov / 2);
     const aspect = size.width / size.height;
-    const byW = 2.25 / 2 / (Math.tan(half) * aspect);
-    const byH = 1.45 / 2 / Math.tan(half);
-    cam.position.set(0, 0, Math.max(byW, byH) + 0.35);
+    const byW = 2.16 / 2 / (Math.tan(half) * aspect);
+    const byH = 1.19 / 2 / Math.tan(half);
+    cam.position.set(0, 0, Math.max(byW, byH) + 0.08);
     cam.updateProjectionMatrix();
   }, [camera, size]);
   return null;
@@ -204,8 +204,8 @@ function Scene({ faces, current, onCurrentChange, onHit }: Omit<Book3DProps, "pa
     }
     if (tilt.current) {
       const px = reduce ? 0 : state.pointer.x, py = reduce ? 0 : state.pointer.y;
-      tilt.current.rotation.x += (-0.5 + py * 0.06 - tilt.current.rotation.x) * k;
-      tilt.current.rotation.y += (px * 0.12 - tilt.current.rotation.y) * k;
+      tilt.current.rotation.x += (-0.27 + py * 0.025 - tilt.current.rotation.x) * k;
+      tilt.current.rotation.y += (-0.035 + px * 0.035 - tilt.current.rotation.y) * k;
     }
   });
 
@@ -224,12 +224,12 @@ function Scene({ faces, current, onCurrentChange, onHit }: Omit<Book3DProps, "pa
 
   return (
     <>
-      <ambientLight intensity={0.7} />
+      <ambientLight intensity={1.05} />
       <directionalLight
         position={[-1.6, 2.2, 3.2]}
-        intensity={2.1}
+        intensity={1.5}
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
         shadow-camera-left={-2}
@@ -237,14 +237,27 @@ function Scene({ faces, current, onCurrentChange, onHit }: Omit<Book3DProps, "pa
         shadow-camera-top={2}
         shadow-camera-bottom={-2}
       />
-      <pointLight position={[1.5, -1, 1.5]} intensity={0.6} color="#b48cff" />
-      <group ref={tilt} rotation={[-0.5, 0, 0]}>
+      <pointLight position={[1.5, -1, 1.5]} intensity={0.25} color="#d8c4ee" />
+      <group ref={tilt} rotation={[-0.27, -0.035, -0.025]}>
         <mesh position={[0, 0, -0.04]} receiveShadow>
           <planeGeometry args={[14, 14]} />
           {/* nur der Schatten des Hefts; der Schreibtisch selbst ist der Hintergrund */}
           <shadowMaterial opacity={0.55} />
         </mesh>
-        <group ref={shift} position={[-PW / 2, 0, 0]}>
+        <group ref={shift} position={[current === 0 ? -PW / 2 : current === leaves ? PW / 2 : 0, 0, 0]}>
+          {/* A slim cloth board and layered paper edge give the spread a physical silhouette. */}
+          {[...(current > 0 ? [-1] : []), ...(current < leaves ? [1] : [])].map((side) => (
+            <group key={side} position={[side * PW / 2, 0, -0.028]}>
+              <mesh receiveShadow castShadow>
+                <boxGeometry args={[PW + 0.018, PH + 0.018, 0.012]} />
+                <meshStandardMaterial color="#382d40" roughness={0.94} />
+              </mesh>
+              <mesh position={[0, 0, 0.009]}>
+                <boxGeometry args={[PW - 0.004, PH - 0.004, 0.009]} />
+                <meshStandardMaterial color="#d8cebb" roughness={1} />
+              </mesh>
+            </group>
+          ))}
           {Array.from({ length: leaves }, (_, i) => (
             <Leaf
               key={i}
@@ -260,7 +273,7 @@ function Scene({ faces, current, onCurrentChange, onHit }: Omit<Book3DProps, "pa
           {/* Lesebändchen */}
           <mesh position={[0.01, -PH / 2 - 0.06, -0.03]} rotation={[0, 0, 0.08]} castShadow>
             <planeGeometry args={[0.028, 0.2]} />
-            <meshStandardMaterial color="#5b26a0" roughness={0.6} side={THREE.DoubleSide} />
+            <meshStandardMaterial color="#917597" roughness={0.6} side={THREE.DoubleSide} />
           </mesh>
         </group>
       </group>
@@ -279,7 +292,7 @@ export default function Book3D({ pages, fonts, ...rest }: Book3DProps) {
         </div>
       )}
       {faces && (
-        <Canvas shadows dpr={[1, 2]} camera={{ fov: 30, position: [0, 0, 3] }} gl={{ antialias: true }}>
+        <Canvas shadows dpr={[1, 1.5]} camera={{ fov: 30, position: [0, 0, 3] }} gl={{ antialias: true }}>
           <Scene faces={faces} {...rest} />
         </Canvas>
       )}

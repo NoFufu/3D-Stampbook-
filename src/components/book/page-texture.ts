@@ -29,10 +29,10 @@ function paper(ctx: CanvasRenderingContext2D, side: "front" | "back") {
   }
   // Fasern
   ctx.lineCap = "round";
-  for (let i = 0; i < 3200; i++) {
+  for (let i = 0; i < 1800; i++) {
     const x = Math.random() * TEX_W, y = Math.random() * TEX_H;
     const a = Math.random() * Math.PI, l = 8 + Math.random() * 30;
-    ctx.strokeStyle = Math.random() < 0.6 ? `rgba(120,95,60,${0.07 + Math.random() * 0.12})` : "rgba(255,255,255,.35)";
+    ctx.strokeStyle = Math.random() < 0.6 ? `rgba(120,95,60,${0.04 + Math.random() * 0.06})` : "rgba(255,255,255,.35)";
     ctx.lineWidth = 0.6 + Math.random() * 0.8;
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -44,11 +44,11 @@ function paper(ctx: CanvasRenderingContext2D, side: "front" | "back") {
   const img = ctx.getImageData(0, 0, TEX_W, TEX_H);
   const d = img.data;
   const C = 3, cols = Math.ceil(TEX_W / C);
-  const coarse = Array.from({ length: cols * Math.ceil(TEX_H / C) }, () => (Math.random() - 0.5) * 16);
+  const coarse = Array.from({ length: cols * Math.ceil(TEX_H / C) }, () => (Math.random() - 0.5) * 8);
   for (let y = 0; y < TEX_H; y++)
     for (let x = 0; x < TEX_W; x++) {
       const i = (y * TEX_W + x) * 4;
-      const n = coarse[Math.floor(y / C) * cols + Math.floor(x / C)] + (Math.random() - 0.5) * 16;
+      const n = coarse[Math.floor(y / C) * cols + Math.floor(x / C)] + (Math.random() - 0.5) * 8;
       d[i] += n; d[i + 1] += n; d[i + 2] += n * 0.9;
     }
   ctx.putImageData(img, 0, 0);
@@ -88,41 +88,59 @@ function pencilNote(ctx: CanvasRenderingContext2D, text: string, side: "front" |
 
 function cover(ctx: CanvasRenderingContext2D, f: PageFonts, back: boolean) {
   const g = ctx.createLinearGradient(0, 0, TEX_W, TEX_H);
-  g.addColorStop(0, "#3d3c42");
-  g.addColorStop(0.6, "#232227");
-  g.addColorStop(1, "#2c2b31");
+  g.addColorStop(0, "#39303f");
+  g.addColorStop(0.5, "#29222f");
+  g.addColorStop(1, "#342b38");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, TEX_W, TEX_H);
-  for (let i = 0; i < 9000; i++) {
-    ctx.fillStyle = Math.random() < 0.5 ? "rgba(255,255,255,.025)" : "rgba(0,0,0,.25)";
-    ctx.fillRect(Math.random() * TEX_W, Math.random() * TEX_H, 2, 2);
+  // Woven bookcloth, with a slightly recessed spine.
+  for (let x = 0; x < TEX_W; x += 3) {
+    ctx.strokeStyle = x % 2 ? "#ffffff08" : "#00000016";
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, TEX_H); ctx.stroke();
   }
-  // Kante des Hardcovers
-  ctx.strokeStyle = "rgba(255,255,255,.12)";
-  ctx.lineWidth = 6;
-  ctx.strokeRect(3, 3, TEX_W - 6, TEX_H - 6);
+  for (let y = 0; y < TEX_H; y += 4) {
+    ctx.strokeStyle = "#ffffff05";
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(TEX_W, y); ctx.stroke();
+  }
+  const spine = ctx.createLinearGradient(0, 0, 80, 0);
+  spine.addColorStop(0, "#100d17a0"); spine.addColorStop(0.65, "#100d1750"); spine.addColorStop(1, "#100d1700");
+  ctx.fillStyle = spine; ctx.fillRect(0, 0, 80, TEX_H);
+  ctx.strokeStyle = "#c6ad7b55"; ctx.lineWidth = 2;
+  ctx.strokeRect(48, 42, TEX_W - 90, TEX_H - 84);
+  ctx.strokeStyle = "#c6ad7b22";
+  ctx.strokeRect(58, 52, TEX_W - 110, TEX_H - 104);
   ctx.textAlign = "center";
+  ctx.fillStyle = "#c6ad7b";
   if (back) {
-    ctx.font = `400 24px ${f.mono}`;
-    ctx.fillStyle = "#5e5a62";
-    ctx.fillText("FORTSETZUNG FOLGT", TEX_W / 2, TEX_H / 2);
+    ctx.font = `italic 300 46px ${f.display}`;
+    ctx.fillText("Fortsetzung folgt.", TEX_W / 2, TEX_H / 2);
+    ctx.font = `400 17px ${f.mono}`;
+    ctx.fillText("MIT LIEBE GESAMMELT", TEX_W / 2, TEX_H - 115);
     return;
   }
-  // geprägter Markenrahmen
+  ctx.font = `400 19px ${f.mono}`;
+  ctx.fillText("P E R S Ö N L I C H E   S A M M L U N G", TEX_W / 2, 155);
+  // A foil stamp and its fine cancellation arcs.
   ctx.save();
-  ctx.strokeStyle = "#45434b";
-  ctx.lineWidth = 8;
-  ctx.setLineDash([22, 14]);
-  ctx.strokeRect(TEX_W / 2 - 140, TEX_H / 2 - 290, 280, 340);
+  ctx.translate(TEX_W / 2, 410); ctx.rotate(-0.07);
+  ctx.strokeStyle = "#c6ad7b99"; ctx.lineWidth = 2;
+  ctx.setLineDash([7, 8]); ctx.strokeRect(-100, -115, 200, 230); ctx.setLineDash([]);
+  ctx.strokeRect(-85, -100, 170, 200);
+  ctx.font = `italic 300 116px ${f.display}`;
+  ctx.fillText("S", 0, 38);
+  ctx.font = `400 14px ${f.mono}`; ctx.fillText("Nº 01", 0, 80);
   ctx.restore();
-  // Prägung: heller Rand unten, dunkler oben
-  ctx.font = `italic 300 132px ${f.display}`;
-  ctx.fillStyle = "rgba(255,255,255,.10)";
-  ctx.fillText("Stanzheft", TEX_W / 2, TEX_H / 2 + 194);
-  ctx.fillStyle = "#c9c2d6";
-  ctx.globalAlpha = 0.82;
-  ctx.fillText("Stanzheft", TEX_W / 2, TEX_H / 2 + 190);
-  ctx.globalAlpha = 1;
+  ctx.font = `italic 300 133px ${f.display}`;
+  ctx.fillStyle = "#ddcba7";
+  ctx.shadowColor = "#0008"; ctx.shadowOffsetY = 2; ctx.shadowBlur = 2;
+  ctx.fillText("Stanzheft", TEX_W / 2, 730);
+  ctx.shadowColor = "transparent";
+  ctx.font = `400 26px ${f.body}`;
+  ctx.fillStyle = "#b6a491";
+  ctx.fillText("Kleine Dinge, die bleiben.", TEX_W / 2, 795);
+  ctx.fillStyle = "#c6ad7b88"; ctx.fillRect(TEX_W / 2 - 28, 885, 56, 1);
+  ctx.font = `400 17px ${f.mono}`;
+  ctx.fillText("V O L U M E   0 1", TEX_W / 2, TEX_H - 110);
 }
 
 /** Positionen der 12 Ausstanzungen (4 × 3), wie auf den echten Seiten. */
@@ -161,9 +179,33 @@ export async function drawPage(
 
   switch (spec.kind) {
     case "contents":
-      // bewusst leer, wie die erste Innenseite des echten Hefts
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#948578";
+      ctx.font = `400 18px ${f.mono}`;
+      ctx.fillText("D A S   S A M M E L A R C H I V", 105, 145);
+      ctx.fillStyle = "#49403a";
+      ctx.font = `italic 300 88px ${f.display}`;
+      ctx.fillText("Für die kleinen", 100, 300);
+      ctx.fillText("Besonderheiten.", 100, 395);
+      ctx.font = `400 25px ${f.body}`;
+      ctx.fillStyle = "#8d8074";
+      ctx.fillText("Gefunden, gesammelt und hier bewahrt.", 105, 470);
+      spec.entries.slice(0, 5).forEach((entry, i) => {
+        const y = 640 + i * 67;
+        ctx.strokeStyle = "#a4957b44"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(105, y - 40); ctx.lineTo(900, y - 40); ctx.stroke();
+        ctx.font = `400 17px ${f.mono}`; ctx.fillStyle = "#a18b70";
+        ctx.fillText(String(i + 1).padStart(2, "0"), 105, y);
+        ctx.font = `400 30px ${f.display}`; ctx.fillStyle = "#60544a";
+        const title = entry.length > 30 ? entry.slice(0, 29) + "…" : entry;
+        ctx.fillText(title, 175, y);
+      });
       break;
     case "stamps": {
+      ctx.font = `400 17px ${f.mono}`;
+      ctx.fillStyle = "#a08e78";
+      ctx.textAlign = "left";
+      ctx.fillText(`SAMMLUNG  /  ${spec.title.toLocaleUpperCase("de")}`, 105, 62);
       const slots = stampSlots(spec.stamps.length);
       const imgs = await Promise.all(spec.stamps.map(loadStamp));
       spec.stamps.forEach((stamp, i) => {
