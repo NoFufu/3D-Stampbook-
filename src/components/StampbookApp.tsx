@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BookOpen, ChevronLeft, ChevronRight, ChevronsRight, Plus } from "lucide-react";
 import Dock from "@/components/Dock";
-import { LiquidLines } from "@/components/LiquidLines";
+import { Background } from "@/components/Background";
 import { buildPages, deleteUserPage, listUserPages, type UserPage } from "@/lib/pages";
 import type { StampDef } from "@/lib/stamps";
 import { body, display, mono, pencil } from "@/lib/fonts";
@@ -85,7 +85,7 @@ export default function StampbookApp() {
 
   return (
     <main className="relative min-h-svh overflow-x-clip bg-[var(--desk)] text-[var(--ink)]">
-      <LiquidLines className="pointer-events-none fixed inset-0 h-full w-full" />
+      <Background />
 
       <header className="relative mx-auto max-w-6xl px-5 pt-7 sm:px-8 sm:pt-9">
         <h1 className="font-display text-[2.6rem] leading-none font-light tracking-[-0.02em] italic [font-variation-settings:'SOFT'_100,'WONK'_1] sm:text-[3.4rem]">
