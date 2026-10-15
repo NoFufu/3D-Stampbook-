@@ -12,6 +12,11 @@ erste Karo-Seite) lassen sich jederzeit nachträglich einfügen.
 4. **Teilen**: Andere können das Heft per Link ansehen (Austauschheft-Gedanke).
 5. UI mit Komponenten von [reactbits.dev](https://reactbits.dev).
 
+> **Verhältnis zu `docs/PLAN.md`:** Dort liegt ein früherer Entwurf (Next.js, „Stanzheft“ mit 4 × 3 Marken-Slots,
+> Aceternity und Bklit, statische Preview in `preview/index.html`). Dieser Plan beschreibt die lauffähige
+> Vite-App in diesem Repo. Die Ideen aus `docs/PLAN.md` (Slots, Marken ausschneiden, Statistiken) passen als
+> Meilensteine 4 und 5 obendrauf; sobald entschieden ist, welche Richtung gilt, werden die beiden Pläne zusammengeführt.
+
 ## Tech-Stack
 
 | Bereich | Wahl | Warum |
