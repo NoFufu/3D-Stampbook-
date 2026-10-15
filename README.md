@@ -5,9 +5,9 @@ und neue Seiten als Foto einkleben.
 
 ## Online stellen
 
-[![Mit Vercel veröffentlichen](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNoFufu%2F3D-Stampbook-&project-name=stanzheft)
+[![Mit Vercel veröffentlichen](https://vercel.com/button)](https://vercel.com/new/import?s=https%3A%2F%2Fgithub.com%2FNoFufu%2F3D-Stampbook-&project-name=stanzheft)
 
-Ein Klick auf den Button legt das Heft bei Vercel an und baut es aus diesem Repo (Branch `main`). Danach gibt Vercel einen öffentlichen Link aus, den man hier eintragen kann.
+Der Button importiert genau dieses Repo in Vercel (es wird kein neues Repo angelegt). Beim ersten Mal fragt Vercel nach Zugriff auf GitHub: dort „NoFufu/3D-Stampbook-“ freigeben. Danach auf „Deploy“ klicken, und Vercel gibt einen öffentlichen Link aus. Jeder Push auf den Standardbranch wird automatisch neu veröffentlicht.
 
 ## Starten
 
