@@ -1,6 +1,6 @@
 "use client";
 
-import { stampDataUrl, type StampDef } from "@/lib/stamps";
+import type { StampDef } from "@/lib/stamps";
 import { Sheet } from "./Sheet";
 
 export function StampDetail({ value, onClose }: { value: { stamp: StampDef; page: number } | null; onClose: () => void }) {
@@ -11,7 +11,7 @@ export function StampDetail({ value, onClose }: { value: { stamp: StampDef; page
         <div className="grid items-center gap-6 sm:grid-cols-[200px_1fr]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={stampDataUrl(s)}
+            src={s.image}
             alt={s.name}
             className="mx-auto w-40 -rotate-2 drop-shadow-[0_8px_14px_rgba(0,0,0,.45)] sm:w-full"
           />

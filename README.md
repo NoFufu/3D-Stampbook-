@@ -24,7 +24,7 @@ npm run lint
 |---|---|
 | `src/components/book/Book3D.tsx` | 3D-Heft mit React Three Fiber, gebogenes Papier beim Umblättern, Ziehen zum Blättern |
 | `src/components/book/page-texture.ts` | zeichnet jede Heftseite als Textur (Umschlag, 4 × 3 Marken, Fotos) |
-| `src/lib/stamps.ts` | prozedurale Marken mit Zähnung (Karo & Tierfell) |
+| `src/lib/stamps.ts`, `public/stamps/` | die 24 Marken (Karo & Tierfell), ausgeschnitten aus Fotos der echten Heftseiten |
 | `src/lib/pages.ts` | Seitenreihenfolge und lokale Ablage der eingeklebten Fotos |
 | `src/components/StampbookApp.tsx` | Hauptseite: Titel, Heft, Dock, Dialoge, Statistik |
 

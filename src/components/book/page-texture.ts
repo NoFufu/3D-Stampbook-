@@ -1,4 +1,4 @@
-import { renderStamp, type StampDef } from "@/lib/stamps";
+import { loadStamp, type StampDef } from "@/lib/stamps";
 import type { PageSpec } from "@/lib/pages";
 
 export const TEX_W = 1024;
@@ -90,7 +90,7 @@ function cover(ctx: CanvasRenderingContext2D, f: PageFonts, back: boolean) {
 
 /** Positionen der 12 Ausstanzungen (4 × 3), wie auf den echten Seiten. */
 export function stampSlots(count = 12) {
-  const gx0 = 0.09, gx1 = 0.91, gy0 = 0.12, gy1 = 0.84;
+  const gx0 = 0.1, gx1 = 0.92, gy0 = 0.1, gy1 = 0.865;
   const gridW = gx1 - gx0;
   const gap = gridW * 0.07;
   const cw = (gridW - gap * 3) / 4;
@@ -137,19 +137,22 @@ export async function drawPage(
     }
     case "stamps": {
       const slots = stampSlots(spec.stamps.length);
+      const imgs = await Promise.all(spec.stamps.map(loadStamp));
       spec.stamps.forEach((stamp, i) => {
         const s = slots[i];
-        const w = (s.u1 - s.u0) * TEX_W;
-        const img = renderStamp(stamp, w / 180);
+        const img = imgs[i];
+        // Foto-Ausschnitt ins Feld einpassen, Seitenverhältnis behalten
+        const bw = (s.u1 - s.u0) * TEX_W, bh = (s.v1 - s.v0) * TEX_H;
+        const k = Math.min(bw / img.width, bh / img.height);
+        const w = img.width * k, h = img.height * k;
         ctx.save();
         ctx.shadowColor = "rgba(0,0,0,.35)";
         ctx.shadowBlur = 3;
         ctx.shadowOffsetY = 1.5;
-        ctx.drawImage(img, s.u0 * TEX_W, s.v0 * TEX_H, w, (s.v1 - s.v0) * TEX_H);
+        ctx.drawImage(img, s.u0 * TEX_W + (bw - w) / 2, s.v0 * TEX_H + (bh - h) / 2, w, h);
         ctx.restore();
         hits.push({ kind: "stamp", stamp, ...s });
       });
-      pencilNote(ctx, spec.title, side, f);
       break;
     }
     case "photo": {
