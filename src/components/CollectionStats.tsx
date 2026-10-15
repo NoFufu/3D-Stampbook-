@@ -25,7 +25,7 @@ export function CollectionStats({ userPages }: { userPages: UserPage[] }) {
         </RingChart>
       </div>
       <div className="min-w-0">
-        <h2 className="font-display text-2xl font-medium">Sammlung</h2>
+        <h2 className="font-display text-2xl font-normal italic">Sammlung</h2>
         <p className="mb-4 text-sm text-[var(--ink-soft)]">
           {total} Marken auf {data.length + Math.max(0, userPages.length - 3)} Seiten. Jeder Ring ist eine Seite mit 12 Plätzen.
         </p>

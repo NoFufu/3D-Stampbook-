@@ -16,10 +16,48 @@ const PAPER = "#f2ede3";
 function paper(ctx: CanvasRenderingContext2D, side: "front" | "back") {
   ctx.fillStyle = PAPER;
   ctx.fillRect(0, 0, TEX_W, TEX_H);
-  // Papierkorn
-  for (let i = 0; i < 14000; i++) {
-    ctx.fillStyle = Math.random() < 0.5 ? "rgba(120,100,70,.05)" : "rgba(255,255,255,.25)";
-    ctx.fillRect(Math.random() * TEX_W, Math.random() * TEX_H, 2, 2);
+  // Wolkigkeit: große, weiche Flecken wie bei ungestrichenem Papier
+  for (let i = 0; i < 40; i++) {
+    const x = Math.random() * TEX_W, y = Math.random() * TEX_H, r = 120 + Math.random() * 260;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    const dark = Math.random() < 0.55;
+    const c = dark ? "150,125,90" : "255,255,250";
+    g.addColorStop(0, `rgba(${c},${dark ? 0.05 : 0.2})`);
+    g.addColorStop(1, `rgba(${c},0)`);
+    ctx.fillStyle = g;
+    ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  // Fasern
+  ctx.lineCap = "round";
+  for (let i = 0; i < 3200; i++) {
+    const x = Math.random() * TEX_W, y = Math.random() * TEX_H;
+    const a = Math.random() * Math.PI, l = 8 + Math.random() * 30;
+    ctx.strokeStyle = Math.random() < 0.6 ? `rgba(120,95,60,${0.07 + Math.random() * 0.12})` : "rgba(255,255,255,.35)";
+    ctx.lineWidth = 0.6 + Math.random() * 0.8;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(x + Math.cos(a) * l * 0.5 + (Math.random() - 0.5) * 4, y + Math.sin(a) * l * 0.5, x + Math.cos(a) * l, y + Math.sin(a) * l);
+    ctx.stroke();
+  }
+  // feines Korn pro Pixel
+  // Korn in zwei Größen: grob (3 px, bleibt auch verkleinert sichtbar) und fein
+  const img = ctx.getImageData(0, 0, TEX_W, TEX_H);
+  const d = img.data;
+  const C = 3, cols = Math.ceil(TEX_W / C);
+  const coarse = Array.from({ length: cols * Math.ceil(TEX_H / C) }, () => (Math.random() - 0.5) * 16);
+  for (let y = 0; y < TEX_H; y++)
+    for (let x = 0; x < TEX_W; x++) {
+      const i = (y * TEX_W + x) * 4;
+      const n = coarse[Math.floor(y / C) * cols + Math.floor(x / C)] + (Math.random() - 0.5) * 16;
+      d[i] += n; d[i + 1] += n; d[i + 2] += n * 0.9;
+    }
+  ctx.putImageData(img, 0, 0);
+  // vereinzelte Einschlüsse
+  for (let i = 0; i < 90; i++) {
+    ctx.fillStyle = `rgba(90,70,45,${0.12 + Math.random() * 0.2})`;
+    ctx.beginPath();
+    ctx.arc(Math.random() * TEX_W, Math.random() * TEX_H, 0.6 + Math.random() * 1.2, 0, 7);
+    ctx.fill();
   }
   // Schatten am Falz
   const spineLeft = side === "front";
@@ -78,14 +116,13 @@ function cover(ctx: CanvasRenderingContext2D, f: PageFonts, back: boolean) {
   ctx.strokeRect(TEX_W / 2 - 140, TEX_H / 2 - 290, 280, 340);
   ctx.restore();
   // Prägung: heller Rand unten, dunkler oben
-  ctx.font = `800 130px ${f.display}`;
-  ctx.fillStyle = "rgba(255,255,255,.08)";
-  ctx.fillText("Stanzheft", TEX_W / 2, TEX_H / 2 + 192);
-  ctx.fillStyle = "#1b1a1e";
-  ctx.fillText("Stanzheft", TEX_W / 2, TEX_H / 2 + 188);
-  ctx.font = `400 30px ${f.mono}`;
-  ctx.fillStyle = "#8a8590";
-  ctx.fillText("BAND I · SAMMLUNG", TEX_W / 2, TEX_H / 2 + 260);
+  ctx.font = `italic 300 132px ${f.display}`;
+  ctx.fillStyle = "rgba(255,255,255,.10)";
+  ctx.fillText("Stanzheft", TEX_W / 2, TEX_H / 2 + 194);
+  ctx.fillStyle = "#c9c2d6";
+  ctx.globalAlpha = 0.82;
+  ctx.fillText("Stanzheft", TEX_W / 2, TEX_H / 2 + 190);
+  ctx.globalAlpha = 1;
 }
 
 /** Positionen der 12 Ausstanzungen (4 × 3), wie auf den echten Seiten. */
@@ -123,18 +160,9 @@ export async function drawPage(
   paper(ctx, side);
 
   switch (spec.kind) {
-    case "contents": {
-      ctx.fillStyle = "#6f6961";
-      ctx.font = `500 70px ${f.pencil}`;
-      ctx.fillText("Mein Ausstanz-Heft", 130, 200);
-      ctx.font = `400 26px ${f.mono}`;
-      ctx.fillStyle = "#a49d92";
-      ctx.fillText("INHALT", 130, 270);
-      ctx.font = `500 54px ${f.pencil}`;
-      ctx.fillStyle = "#6f6961";
-      spec.entries.slice(0, 11).forEach((e, i) => ctx.fillText(`${i + 1} · ${e}`, 130, 350 + i * 62));
+    case "contents":
+      // bewusst leer, wie die erste Innenseite des echten Hefts
       break;
-    }
     case "stamps": {
       const slots = stampSlots(spec.stamps.length);
       const imgs = await Promise.all(spec.stamps.map(loadStamp));

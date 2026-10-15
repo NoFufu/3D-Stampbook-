@@ -17,7 +17,7 @@ export function StampDetail({ value, onClose }: { value: { stamp: StampDef; page
           />
           <div>
             <span className="font-mono text-[11px] tracking-[0.12em] text-[var(--ink-soft)] uppercase">Nr. {s.id}</span>
-            <h2 className="font-display text-3xl leading-tight font-extrabold">{s.name}</h2>
+            <h2 className="font-display text-3xl leading-tight font-normal italic">{s.name}</h2>
             <dl className="mt-4 mb-5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm tabular-nums">
               <dt className="font-mono text-[11px] tracking-wider text-[var(--ink-soft)] uppercase">Thema</dt>
               <dd>{s.theme}</dd>

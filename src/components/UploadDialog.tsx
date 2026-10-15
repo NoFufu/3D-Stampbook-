@@ -38,7 +38,7 @@ export function UploadDialog({ open, onClose, onAdded }: { open: boolean; onClos
 
   return (
     <Sheet open={open} onClose={onClose} label="Seite einkleben" className="max-w-2xl">
-      <h2 className="font-display text-2xl font-extrabold">Seite einkleben</h2>
+      <h2 className="font-display text-2xl font-normal italic">Seite einkleben</h2>
       <p className="mt-1 text-sm text-[var(--ink-soft)]">
         Fotografiere deine Heftseite möglichst gerade von oben. Sie landet als neue Seite hinten im Heft.
       </p>

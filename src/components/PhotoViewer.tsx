@@ -32,7 +32,7 @@ export function PhotoViewer({
           <img src={url} alt={page.title} className="max-h-[62svh] w-full rounded-xl object-contain" />
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-display text-2xl font-extrabold">{page.title}</h2>
+              <h2 className="font-display text-2xl font-normal italic">{page.title}</h2>
               <p className="text-sm text-[var(--ink-soft)]">
                 Eingeklebt am {new Date(page.createdAt).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" })}
               </p>

@@ -241,7 +241,8 @@ function Scene({ faces, current, onCurrentChange, onHit }: Omit<Book3DProps, "pa
       <group ref={tilt} rotation={[-0.5, 0, 0]}>
         <mesh position={[0, 0, -0.04]} receiveShadow>
           <planeGeometry args={[14, 14]} />
-          <meshStandardMaterial color="#1c1a20" roughness={1} />
+          {/* nur der Schatten des Hefts; der Schreibtisch selbst ist der Hintergrund */}
+          <shadowMaterial opacity={0.55} />
         </mesh>
         <group ref={shift} position={[-PW / 2, 0, 0]}>
           {Array.from({ length: leaves }, (_, i) => (
