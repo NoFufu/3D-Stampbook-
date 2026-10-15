@@ -87,13 +87,7 @@ export default function StampbookApp() {
     <main className="relative min-h-svh overflow-x-clip bg-[var(--desk)] text-[var(--ink)]">
       <Background />
 
-      <header className="relative mx-auto max-w-6xl px-5 pt-7 sm:px-8 sm:pt-9">
-        <h1 className="font-display text-[2.6rem] leading-none font-light tracking-[-0.02em] italic [font-variation-settings:'SOFT'_100,'WONK'_1] sm:text-[3.4rem]">
-          Stanzheft
-        </h1>
-      </header>
-
-      <section className="relative h-[clamp(440px,68svh,600px)] sm:h-[min(80svh,780px)]" aria-label="3D-Heft">
+      <section className="relative mt-14 h-[clamp(440px,68svh,600px)] sm:h-[min(80svh,780px)]" aria-label="3D-Heft">
         <Book3D pages={pages} current={current} onCurrentChange={go} onHit={onHit} fonts={FONTS} />
         <p className="pointer-events-none absolute inset-x-0 bottom-[92px] text-center text-xs text-[var(--ink-soft)]">{hint}</p>
         <Dock

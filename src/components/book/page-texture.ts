@@ -86,7 +86,7 @@ function pencilNote(ctx: CanvasRenderingContext2D, text: string, side: "front" |
   ctx.restore();
 }
 
-function cover(ctx: CanvasRenderingContext2D, f: PageFonts, back: boolean) {
+function cover(ctx: CanvasRenderingContext2D, back: boolean) {
   const g = ctx.createLinearGradient(0, 0, TEX_W, TEX_H);
   g.addColorStop(0, "#3d3c42");
   g.addColorStop(0.6, "#232227");
@@ -101,28 +101,14 @@ function cover(ctx: CanvasRenderingContext2D, f: PageFonts, back: boolean) {
   ctx.strokeStyle = "rgba(255,255,255,.12)";
   ctx.lineWidth = 6;
   ctx.strokeRect(3, 3, TEX_W - 6, TEX_H - 6);
-  ctx.textAlign = "center";
-  if (back) {
-    ctx.font = `400 24px ${f.mono}`;
-    ctx.fillStyle = "#5e5a62";
-    ctx.fillText("FORTSETZUNG FOLGT", TEX_W / 2, TEX_H / 2);
-    return;
-  }
+  if (back) return;
   // geprägter Markenrahmen
   ctx.save();
   ctx.strokeStyle = "#45434b";
   ctx.lineWidth = 8;
   ctx.setLineDash([22, 14]);
-  ctx.strokeRect(TEX_W / 2 - 140, TEX_H / 2 - 290, 280, 340);
+  ctx.strokeRect(TEX_W / 2 - 140, TEX_H / 2 - 170, 280, 340);
   ctx.restore();
-  // Prägung: heller Rand unten, dunkler oben
-  ctx.font = `italic 300 132px ${f.display}`;
-  ctx.fillStyle = "rgba(255,255,255,.10)";
-  ctx.fillText("Stanzheft", TEX_W / 2, TEX_H / 2 + 194);
-  ctx.fillStyle = "#c9c2d6";
-  ctx.globalAlpha = 0.82;
-  ctx.fillText("Stanzheft", TEX_W / 2, TEX_H / 2 + 190);
-  ctx.globalAlpha = 1;
 }
 
 /** Positionen der 12 Ausstanzungen (4 × 3), wie auf den echten Seiten. */
@@ -153,7 +139,7 @@ export async function drawPage(
   const hits: HitRegion[] = [];
 
   if (spec.kind === "cover" || spec.kind === "backcover") {
-    cover(ctx, f, spec.kind === "backcover");
+    cover(ctx, spec.kind === "backcover");
     return { canvas, hits };
   }
 
